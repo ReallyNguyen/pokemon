@@ -31,17 +31,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>{data.name.toUpperCase()}</h1>
-        <p>Height: {data.height}</p>
-        <p>Base Experience: {data.base_experience}</p>
 
-        <h3>Abilities:</h3>
-        <ul>
-          {data.abilities.map((abilityObj, index) => (
-            <li key={index}>{abilityObj.ability.name}</li>
-          ))}
-        </ul>
         <MultipleApiCalls />
       </header>
     </div>
