@@ -3,6 +3,7 @@ import './App.css';
 // import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from 'react'
 import axios from 'axios';
+import MultipleApiCalls from './pages/Mul';
 
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
             <li key={index}>{abilityObj.ability.name}</li>
           ))}
         </ul>
+        <MultipleApiCalls />
       </header>
     </div>
   );
