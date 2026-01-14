@@ -59,15 +59,16 @@ const MultipleApiCalls = () => {
     }, []);
 
     // Fetch move details using move URL
-    const fetchMoveDetails = async (url) => {
+    const fetchMoveDetails = async (url, setMove) => {
         try {
             const res = await axios.get(url);
-            setPikaMove(res.data);
-            setCharMove(res.data);
+            setMove(res.data);
         } catch (err) {
             console.error(err);
         }
     };
+
+
 
     if (loading) return <p>Loading data...</p>;
     if (error) return <p>Error: {error.message}</p>;
@@ -94,9 +95,10 @@ const MultipleApiCalls = () => {
                 <ul>
                     {pikaMoves.map((m, index) => (
                         <li key={index}>
-                            <button onClick={() => fetchMoveDetails(m.move.url)}>
+                            <button onClick={() => fetchMoveDetails(m.move.url, setPikaMove)}>
                                 {m.move.name}
                             </button>
+
                         </li>
                     ))}
                 </ul>
@@ -133,9 +135,10 @@ const MultipleApiCalls = () => {
                 <ul>
                     {charMoves.map((m, index) => (
                         <li key={index}>
-                            <button onClick={() => fetchMoveDetails(m.move.url)}>
+                            <button onClick={() => fetchMoveDetails(m.move.url, setCharMove)}>
                                 {m.move.name}
                             </button>
+
                         </li>
                     ))}
                 </ul>
