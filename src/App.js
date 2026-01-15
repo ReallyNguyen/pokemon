@@ -4,7 +4,7 @@ import './App.css';
 import { useState, useEffect } from 'react'
 import axios from 'axios';
 import MultipleApiCalls from './pages/Mul';
-
+import Pokemon from './service/pokeapi';
 
 function App() {
   const [data, setData] = useState(null);
@@ -28,12 +28,11 @@ function App() {
   if (isLoading) return <h3>Loading data...</h3>;
   if (!data) return <h3>No data found</h3>;
 
+  console.log(Pokemon('pikachu'))
+
   return (
     <div className="App">
-      <header className="App-header">
 
-        <MultipleApiCalls />
-      </header>
     </div>
   );
 }

@@ -74,6 +74,9 @@ const MultipleApiCalls = () => {
     if (error) return <p>Error: {error.message}</p>;
 
     console.log(charizard)
+
+    console.log(charMove)
+    console.log(pikaMove)
     return (
         <div className="flex flex-row">
             {/* Pikachu */}
