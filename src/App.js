@@ -9,30 +9,32 @@ import Pokemon from './service/pokeapi';
 function App() {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    const fetchData = async () => {
+    const data = async () => {
       try {
-        const response = await axios.get('https://pokeapi.co/api/v2/pokemon/ditto');
-        setData(response.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setIsLoading(false);
+        const result = await Pokemon('ditto');
+        setData(result)
+        console.log(result)
       }
-    };
+      catch (err) {
+        setError(err)
+      } finally {
+        setIsLoading(false)
+      }
 
-    fetchData();
-  }, []);
+    }
+    data();
+  }, [])
 
   if (isLoading) return <h3>Loading data...</h3>;
   if (!data) return <h3>No data found</h3>;
 
-  console.log(Pokemon('pikachu'))
 
   return (
     <div className="App">
-
+      <pre>{JSON.stringify(data, null, 2)}</pre>
     </div>
   );
 }
