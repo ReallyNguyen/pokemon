@@ -11,6 +11,9 @@ function App() {
   }
 
   useEffect(() => {
+
+
+
     if (!save) return;
 
     async function fetchPokemon() {
@@ -22,6 +25,8 @@ function App() {
     fetchPokemon();
   }, [save]);
 
+  console.log(data)
+
   return (
     <div>
       <h1>React Search</h1>
@@ -31,7 +36,17 @@ function App() {
         <button type="submit">Search</button>
       </form>
 
-      {data && <p>{data.name}</p>}
+
+      <p>{data.name}</p>
+      <p>{data.height}</p>
+      <ul>
+        {data.abilities.map((a, index) => (
+          <li key={index}>{a.ability.name}</li>
+        ))}
+      </ul>
+
+
+
     </div>
   );
 }
