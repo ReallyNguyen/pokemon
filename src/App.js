@@ -35,15 +35,21 @@ function App() {
         <input name="query" />
         <button type="submit">Search</button>
       </form>
+      {data && (
 
+        <div>
 
-      <p>{data.name}</p>
-      <p>{data.height}</p>
-      <ul>
-        {data.abilities.map((a, index) => (
-          <li key={index}>{a.ability.name}</li>
-        ))}
-      </ul>
+          <p>{data.name}</p>
+          <p>{data.height}</p>
+          <ul>
+            {data.abilities.map((a, index) => (
+              <li key={index}>{a.ability.name}</li>
+            ))}
+          </ul>
+        </div>
+
+      )}
+
 
 
 
