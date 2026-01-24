@@ -1,14 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Pokemon from "./service/pokeapi";
+import axios from "axios";
 
 function App() {
   const [query, setQuery] = useState("");
   const [data, setData] = useState(null);
   const [moveList, setMoveList] = useState([]);
+  const [move, setMove] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const limit = 4;
+  const limit = 5; // grab 5 moves now
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -29,14 +31,25 @@ function App() {
         .slice(0, limit);
 
       setMoveList(moves);
+      setMove(null); // clear move details when new Pokémon is fetched
     } catch (err) {
       setError("Pokémon not found");
       setData(null);
       setMoveList([]);
+      setMove(null);
     } finally {
       setLoading(false);
     }
   }
+
+  const fetchMoveDetails = async (url) => {
+    try {
+      const res = await axios.get(url);
+      setMove(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div>
@@ -59,10 +72,7 @@ function App() {
           <h2>{data.name}</h2>
           <p>Height: {data.height}</p>
 
-          <img
-            src={data.sprites.front_default}
-            alt={data.name}
-          />
+          <img src={data.sprites.front_default} alt={data.name} />
 
           <h3>Abilities</h3>
           <ul>
@@ -71,12 +81,36 @@ function App() {
             ))}
           </ul>
 
-          <h3>Random Moves</h3>
+          <h3>Moves:</h3>
           <ul>
             {moveList.map((m, index) => (
-              <li key={index}>{m.move.name}</li>
+              <li key={index}>
+                <button onClick={() => fetchMoveDetails(m.move.url)}>
+                  {m.move.name}
+                </button>
+              </li>
             ))}
           </ul>
+
+          {/* Selected Move Details */}
+          {move && (
+            <div className="mt-4">
+              <h3>Move Details</h3>
+              <p>
+                <strong>Name:</strong> {move.name}
+              </p>
+              <p>
+                <strong>Power:</strong> {move.power ?? "N/A"}
+              </p>
+              <p>
+                <strong>Accuracy:</strong> {move.accuracy ?? "N/A"}
+              </p>
+              <p>
+                <strong>Type:</strong> {move.type.name}
+              </p>
+              <button onClick={() => setMove(null)}>Close</button>
+            </div>
+          )}
         </div>
       )}
     </div>
