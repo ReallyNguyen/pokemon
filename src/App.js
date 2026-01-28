@@ -68,51 +68,57 @@ function App() {
       {error && <p>{error}</p>}
 
       {data && (
-        <div>
-          <h2>{data.name}</h2>
-          <p>Height: {data.height}</p>
+        <div className="max-w-sm mx-auto bg-white rounded-2xl shadow-xl p-6 text-center">
+          <img
+            src={data.sprites.front_default}
+            alt={data.name}
+            className="w-36 mx-auto"
+          />
 
-          <img src={data.sprites.front_default} alt={data.name} />
+          <h2 className="text-2xl font-bold capitalize">{data.name}</h2>
+          <p className="text-gray-500 mb-4">Height: {data.height}</p>
 
-          <h3>Abilities</h3>
-          <ul>
+          <h3 className="font-semibold">Abilities</h3>
+          <ul className="mb-4">
             {data.abilities.map((a, index) => (
-              <li key={index}>{a.ability.name}</li>
+              <li key={index} className="capitalize">
+                {a.ability.name}
+              </li>
             ))}
           </ul>
 
-          <h3>Moves:</h3>
-          <ul>
+          <h3 className="font-semibold">Moves</h3>
+          <ul className="space-y-2">
             {moveList.map((m, index) => (
               <li key={index}>
-                <button onClick={() => fetchMoveDetails(m.move.url)}>
+                <button
+                  onClick={() => fetchMoveDetails(m.move.url)}
+                  className="w-full bg-gray-100 rounded-lg py-1 hover:bg-gray-200"
+                >
                   {m.move.name}
                 </button>
               </li>
             ))}
           </ul>
 
-          {/* Selected Move Details */}
           {move && (
-            <div className="mt-4">
-              <h3>Move Details</h3>
-              <p>
-                <strong>Name:</strong> {move.name}
-              </p>
-              <p>
-                <strong>Power:</strong> {move.power ?? "N/A"}
-              </p>
-              <p>
-                <strong>Accuracy:</strong> {move.accuracy ?? "N/A"}
-              </p>
-              <p>
-                <strong>Type:</strong> {move.type.name}
-              </p>
-              <button onClick={() => setMove(null)}>Close</button>
+            <div className="mt-4 bg-gray-50 p-4 rounded-xl">
+              <h3 className="font-bold mb-2">Move Details</h3>
+              <p><strong>Name:</strong> {move.name}</p>
+              <p><strong>Power:</strong> {move.power ?? "N/A"}</p>
+              <p><strong>Accuracy:</strong> {move.accuracy ?? "N/A"}</p>
+              <p><strong>Type:</strong> {move.type.name}</p>
+              <button
+                onClick={() => setMove(null)}
+                className="mt-2 text-sm text-red-500"
+              >
+                Close
+              </button>
             </div>
           )}
         </div>
       )}
+
     </div>
   );
 }
