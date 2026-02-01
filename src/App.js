@@ -10,10 +10,10 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const [currentPlayer, setCurrentPlayer] = useState(1); // 1 = Player 1, 2 = Player 2
+  const [currentPlayer, setCurrentPlayer] = useState(1);
   const [player1Data, setPlayer1Data] = useState(null);
   const [player2Data, setPlayer2Data] = useState(null);
-  const [winner, setWinner] = useState(null); // new state to store winner
+  const [winner, setWinner] = useState(null);
 
   const limit = 5;
 
@@ -37,7 +37,7 @@ function App() {
 
       setMoveList(moves);
       setMove(null);
-    } catch (err) {
+    } catch {
       setError("Pokémon not found");
       setData(null);
       setMoveList([]);
@@ -60,25 +60,24 @@ function App() {
     if (!data || !move) return;
 
     const choice = { pokemon: data, move };
+
     if (currentPlayer === 1) {
       setPlayer1Data(choice);
       setCurrentPlayer(2);
-      // Clear input for Player 2
       setQuery("");
       setData(null);
       setMoveList([]);
       setMove(null);
-    } else if (currentPlayer === 2) {
+    } else {
       setPlayer2Data(choice);
-      setCurrentPlayer(null); // both players done
+      setCurrentPlayer(null);
 
-      // Calculate winner based on move power
       const power1 = player1Data.move.power || 0;
       const power2 = choice.move.power || 0;
 
-      if (power1 > power2) setWinner("Player 1 Wins!");
-      else if (power2 > power1) setWinner("Player 2 Wins!");
-      else setWinner("It's a Tie!");
+      if (power1 > power2) setWinner("🏆 Player 1 Wins!");
+      else if (power2 > power1) setWinner("🏆 Player 2 Wins!");
+      else setWinner("🤝 It's a Tie!");
     }
   };
 
@@ -95,90 +94,124 @@ function App() {
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto text-center">
-      <h1 className="text-2xl font-bold mb-4">Two-Player Pokémon Battle</h1>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 p-4">
+      <div className="max-w-md mx-auto text-center bg-white p-6 rounded-2xl shadow-xl">
 
-      {currentPlayer && <p className="mb-2 font-semibold">Player {currentPlayer}'s Turn</p>}
-      {!currentPlayer && <p className="mb-2 font-semibold">Battle Finished!</p>}
+        <h1 className="text-3xl font-bold mb-4">⚔️ Pokémon Battle</h1>
 
-      {currentPlayer && (
-        <form onSubmit={handleSubmit} className="mb-4">
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Enter Pokémon name"
-            className="border px-2 py-1 rounded mr-2"
-          />
-          <button type="submit" className="bg-blue-500 text-white px-3 py-1 rounded">Search</button>
-        </form>
-      )}
+        {/* Turn Banner */}
+        <div className="mb-4 p-3 rounded-lg bg-indigo-100 shadow">
+          {currentPlayer ? (
+            <p className="font-bold text-indigo-700 text-lg">
+              🎮 Player {currentPlayer}'s Turn
+            </p>
+          ) : (
+            <p className="font-bold text-green-700 text-lg">
+              🏁 Battle Finished!
+            </p>
+          )}
+        </div>
 
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-red-500">{error}</p>}
+        {/* Search */}
+        {currentPlayer && (
+          <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Enter Pokémon name"
+              className="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg transition"
+            >
+              Search
+            </button>
+          </form>
+        )}
 
-      {data && currentPlayer && (
-        <div className="bg-gray-100 p-4 rounded mb-4">
-          <img src={data.sprites.front_default} alt={data.name} className="mx-auto w-40" />
-          <h2 className="capitalize font-bold">{data.name}</h2>
-          <p>Height: {data.height}</p>
+        {loading && <p className="text-gray-500">Loading...</p>}
+        {error && <p className="text-red-500">{error}</p>}
 
-          <h3 className="font-semibold mt-2">Moves</h3>
-          <ul className="space-y-1">
-            {moveList.map((m, index) => (
-              <li key={index}>
+        {/* Pokémon Card */}
+        {data && currentPlayer && (
+          <>
+            <div className="bg-gray-50 p-4 rounded-xl shadow mb-4">
+              <img
+                src={data.sprites.front_default}
+                alt={data.name}
+                className="mx-auto w-36"
+              />
+              <h2 className="capitalize font-bold text-xl">{data.name}</h2>
+              <p className="text-sm text-gray-500">Height: {data.height}</p>
+            </div>
+
+            {/* Moves */}
+            <h3 className="font-semibold mb-2">Choose a Move</h3>
+            <div className="grid grid-cols-2 gap-2">
+              {moveList.map((m, index) => (
                 <button
+                  key={index}
                   onClick={() => fetchMoveDetails(m.move.url)}
-                  className="w-full bg-gray-200 py-1 rounded hover:bg-gray-300"
+                  className={`py-2 rounded-lg capitalize text-sm transition
+                    ${move?.name === m.move.name
+                      ? "bg-indigo-500 text-white"
+                      : "bg-gray-100 hover:bg-gray-200"
+                    }`}
                 >
                   {m.move.name}
                 </button>
-              </li>
-            ))}
-          </ul>
+              ))}
+            </div>
 
-          {move && (
-            <div className="mt-2 bg-gray-50 p-2 rounded">
-              <p><strong>Name:</strong> {move.name}</p>
-              <p><strong>Power:</strong> {move.power ?? "N/A"}</p>
-              <p><strong>Accuracy:</strong> {move.accuracy ?? "N/A"}</p>
-              <p><strong>Type:</strong> {move.type.name}</p>
-              <button
-                onClick={confirmChoice}
-                className="mt-2 bg-green-500 text-white px-2 py-1 rounded"
-              >
-                Confirm Choice
-              </button>
-            </div>
-          )}
-        </div>
-      )}
+            {/* Move Details */}
+            {move && (
+              <div className="mt-4 p-3 rounded-lg bg-indigo-50 shadow-inner">
+                <p><strong>Move:</strong> {move.name}</p>
+                <p><strong>Power:</strong> {move.power ?? "N/A"}</p>
+                <p><strong>Accuracy:</strong> {move.accuracy ?? "N/A"}</p>
+                <p><strong>Type:</strong> {move.type.name}</p>
 
-      {!currentPlayer && player1Data && player2Data && (
-        <div className="mt-4">
-          <h2 className="font-bold mb-2">Results</h2>
-          <div className="flex justify-around mb-2">
-            <div>
-              <h3>Player 1</h3>
-              <p className="capitalize">{player1Data.pokemon.name}</p>
-              <p>Move: {player1Data.move.name}</p>
-              <p>Power: {player1Data.move.power ?? "N/A"}</p>
+                <button
+                  onClick={confirmChoice}
+                  className="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg"
+                >
+                  ✅ Confirm Choice
+                </button>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Results */}
+        {!currentPlayer && player1Data && player2Data && (
+          <div className="mt-6 p-4 rounded-xl bg-gray-50 shadow">
+            <h2 className="text-2xl font-bold mb-4">⚔️ Battle Results</h2>
+
+            <div className="grid grid-cols-2 gap-4">
+              {[player1Data, player2Data].map((player, i) => (
+                <div key={i} className="p-3 bg-white rounded-lg shadow">
+                  <h3 className="font-bold mb-1">Player {i + 1}</h3>
+                  <p className="capitalize">{player.pokemon.name}</p>
+                  <p className="text-sm">Move: {player.move.name}</p>
+                  <p className="text-sm">Power: {player.move.power ?? "N/A"}</p>
+                </div>
+              ))}
             </div>
-            <div>
-              <h3>Player 2</h3>
-              <p className="capitalize">{player2Data.pokemon.name}</p>
-              <p>Move: {player2Data.move.name}</p>
-              <p>Power: {player2Data.move.power ?? "N/A"}</p>
-            </div>
+
+            <p className="text-xl font-bold mt-4 text-indigo-600">{winner}</p>
+
+            <button
+              onClick={resetGame}
+              className="mt-4 w-full bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-lg"
+            >
+              🔄 Play Again
+            </button>
           </div>
-          <h3 className="text-xl font-bold mb-2">{winner}</h3>
-          <button
-            onClick={resetGame}
-            className="mt-2 bg-blue-500 text-white px-3 py-1 rounded"
-          >
-            Play Again
-          </button>
-        </div>
-      )}
+        )}
+
+      </div>
     </div>
   );
 }
